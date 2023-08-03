@@ -7,7 +7,6 @@ vendor/
 # Dependency directories (remove the ones you use for your project)
 /dependency/
 /vendor/
-/go.sum
 
 # Build output
 /build/
