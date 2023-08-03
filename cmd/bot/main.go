@@ -2,22 +2,36 @@ package main
 
 import (
 	"log"
-
-	"github.com/Skavengerrr/job-scrapper/pkg/telegram"
+	"net/http"
 
 	configs "github.com/Skavengerrr/job-scrapper/configs"
+	"github.com/Skavengerrr/job-scrapper/pkg/telegram"
 )
 
 func main() {
 	cfg, err := configs.InitViper(".")
 	if err != nil {
-		log.Fatal('a', err)
-	}
-	botApi := telegram.InitBot(&cfg)
-
-	bot := telegram.NewBot(botApi, &cfg)
-
-	if err := bot.Start(); err != nil {
 		log.Fatal(err)
 	}
+
+	botApi := telegram.InitBot(&cfg)
+	bot := telegram.NewBot(botApi, &cfg)
+
+	// Start a goroutine to handle incoming updates
+	go bot.Start()
+
+	http.HandleFunc("/webhook-endpoint", func(w http.ResponseWriter, r *http.Request) {
+		// Check if the request method is POST
+		if r.Method != http.MethodPost {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		// Respond with a success message
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Update processed successfully"))
+	})
+
+	port := ":" + "3000" // Use the port number you prefer, e.g., ":3000"
+	log.Fatal(http.ListenAndServe(port, nil))
 }
