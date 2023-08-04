@@ -20,7 +20,7 @@ func main() {
 	// Start a goroutine to handle incoming updates
 	go bot.Start()
 
-	http.HandleFunc("/webhook-endpoint", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("https://api.telegram.org/bot6480770355:AAHBuGVvp6Rh5JsRxYgZlazYHCuGgjWEm04/setWebhook?url=https://job-scrapper-3b16a55af4da.herokuapp.com/", func(w http.ResponseWriter, r *http.Request) {
 		// Check if the request method is POST
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
